@@ -32,8 +32,9 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_Hook
 {
-  protected $_conditions = array();   /** Array of JConfig_Hook_Condition */
-  protected $_results    = array();   /** Array of JConfig_Hook_Result */
+  protected $_conditions  = array();   /** Array of JConfig_Hook_Condition */
+  protected $_hookmanager = NULL;      /** Reference to the hookmanager instance */
+  protected $_results     = array();   /** Array of JConfig_Hook_Result */
 
 
   /**
@@ -158,6 +159,21 @@ abstract class JConfig_Core_Hook
     }
 
     return TRUE;
+  }
+
+
+  /**
+   * Set the internal reference to the hookmanager
+   *
+   * @param JConfig_HookManager &$hookmanager Reference to the hookmanager instance
+   *
+   * @return this
+   */
+  public function set_hookmanager(JConfig_HookManager & $hookmanager)
+  {
+    $this->_hookmanager = $hookmanager;
+
+    return $this;
   }
 
 } // End JConfig_Core_Hook

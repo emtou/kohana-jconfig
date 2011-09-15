@@ -69,6 +69,8 @@ abstract class JConfig_Core_HookManager
   {
     foreach ($hooks_config as $hook)
     {
+      $hook->set_hookmanager($this);
+
       $this->_hooks[] = $hook;
     }
 
