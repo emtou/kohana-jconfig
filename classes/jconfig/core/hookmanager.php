@@ -95,12 +95,43 @@ abstract class JConfig_Core_HookManager
   {
     $nb_rules = 0;
 
-    foreach ($this->_hooks as $hook)
+    // @hack add a validation rule
+    $nb_rules++;
+
+    $callback = function(Validation $validation, $alias, $value, Jelly_Model $model, JConfig_HookManager $hookmanager)
     {
-      $nb_rules += $hook->add_validation_rules($validation);
-    }
+      return $hookmanager->check($validation, $alias, $value, $model);
+    };
+
+    $validation->rule(
+        $this->_field->get_alias(),
+        $callback,
+        array(':validation', ':field', ':value', ':model', $this)
+    );
 
     return $nb_rules;
+  }
+
+
+  /**
+   * Validates a field with the hooks
+   *
+   * @param Validation  $validation Validation instance
+   * @param string      $alias      Alias of the fied to validate
+   * @param mixed       $value      Current value of the field
+   * @param Jelly_Model $model      Current state of the model
+   *
+   * @return bool Is this field valid ?
+   */
+  public function check(Validation $validation, $alias, $value, Jelly_Model $model)
+  {
+    foreach ($this->_hooks as $hook)
+    {
+      if ( ! $hook->check($validation, $alias, $value, $model))
+        return FALSE;
+    }
+
+    return TRUE;
   }
 
 

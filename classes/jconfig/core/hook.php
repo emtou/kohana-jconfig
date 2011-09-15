@@ -61,21 +61,21 @@ abstract class JConfig_Core_Hook
 
 
   /**
-   * Add validation rules to a Validation instance for this hook
+   * Validates a field with this hook
    *
-   * @param Validation &$validation Validation instance
+   * @param Validation  $validation Validation instance
+   * @param string      $alias      Alias of the fied to validate
+   * @param mixed       $value      Current value of the field
+   * @param Jelly_Model $model      Current state of the model
    *
-   * @return int Number of rules added
+   * @return bool Is this field valid ?
    */
-  public function add_validation_rules(Validation & $validation)
+  public function check(Validation $validation, $alias, $value, Jelly_Model $model)
   {
-    $nb_rules = 0;
-
-    // @hack add a validation rule
-    $nb_rules++;
-    // $validation->rule($field, $callback, array($parameter1, $parameter2));
-
-    return $nb_rules;
+    // @hack
+    // $validation->error($alias, 'hook');
+    // return FALSE;
+    return TRUE;
   }
 
 
