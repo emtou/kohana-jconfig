@@ -32,6 +32,7 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_HookManager
 {
+  protected $_field = NULL;      /** Reference to the field */
   protected $_hooks = array();   /** Array of JConfig_Hook */
 
 
@@ -40,21 +41,26 @@ abstract class JConfig_Core_HookManager
    *
    * Can't be called, the factory() method must be used.
    *
+   * @param JConfig_Field &$field Reference to the field
+   *
    * @return JConfig_HookManager
    */
-  protected function __construct()
+  protected function __construct(JConfig_Field & $field)
   {
+    $this->_field = $field;
   }
 
 
   /**
    * Create a chainable instance of the JConfig_HookManager class
    *
+   * @param JConfig_Field &$field Reference to the field
+   *
    * @return JConfig_HookManager
    */
-  public static function factory()
+  public static function factory(JConfig_Field & $field)
   {
-    return new JConfig_HookManager;
+    return new JConfig_HookManager($field);
   }
 
 

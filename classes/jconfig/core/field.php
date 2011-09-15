@@ -96,7 +96,7 @@ abstract class JConfig_Core_Field
    */
   protected function _load_hookmanager()
   {
-    $this->_hookmanager = JConfig_HookManager::factory();
+    $this->_hookmanager = JConfig_HookManager::factory($this);
 
     if (isset($this->_config['hooks']))
     {
