@@ -207,6 +207,19 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Add validation rules to a Validation instance for this field
+   *
+   * @param Validation &$validation Validation instance
+   *
+   * @return int Number of rules added
+   */
+  public function add_validation_rules(Validation & $validation)
+  {
+    return $this->_hookmanager->add_validation_rules($validation);
+  }
+
+
+  /**
    * Generates a formo field configuration for this field
    *
    * @param Jelly_Model $model Model instance

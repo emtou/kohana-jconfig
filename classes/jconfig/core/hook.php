@@ -60,6 +60,25 @@ abstract class JConfig_Core_Hook
 
 
   /**
+   * Add validation rules to a Validation instance for this hook
+   *
+   * @param Validation &$validation Validation instance
+   *
+   * @return int Number of rules added
+   */
+  public function add_validation_rules(Validation & $validation)
+  {
+    $nb_rules = 0;
+
+    // @hack add a validation rule
+    $nb_rules++;
+    // $validation->rule($field, $callback, array($parameter1, $parameter2));
+
+    return $nb_rules;
+  }
+
+
+  /**
    * Adds a condition to the internal container
    *
    * @param string $what     What does the condition apply to ?

@@ -77,6 +77,26 @@ abstract class JConfig_Core_HookManager
 
 
   /**
+   * Add validation rules to a Validation instance for all the hooks
+   *
+   * @param Validation &$validation Validation instance
+   *
+   * @return int Number of rules added
+   */
+  public function add_validation_rules(Validation & $validation)
+  {
+    $nb_rules = 0;
+
+    foreach ($this->_hooks as $hook)
+    {
+      $nb_rules += $hook->add_validation_rules($validation);
+    }
+
+    return $nb_rules;
+  }
+
+
+  /**
    * Get all possible values for a field
    *
    * @param JConfig_Field $field Field to look into
