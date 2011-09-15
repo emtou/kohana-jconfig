@@ -59,6 +59,22 @@ abstract class JConfig_Core
 
 
   /**
+   * Add validation rules to a Validation instance for a model
+   *
+   * @param string     $model_alias Alias of the model
+   * @param Validation &$validation Validation instance
+   *
+   * @return int Number of rules added
+   */
+  public function add_validation_rules($model_alias, Validation & $validation)
+  {
+    $this->load($model_alias);
+
+    return $this->_models[$model_alias]->add_validation_rules($validation);
+  }
+
+
+  /**
    * Generates a list of formo fields' configuration
    *
    * @param string      $model_alias   Alias of the model

@@ -37,12 +37,12 @@ abstract class JConfig_Core_Field
   protected $_driver      = NULL;    /** configuration array */
   protected $_error       = FALSE;   /** is this field in error state ? */
   protected $_extraparams = array(); /** extra params for the jelly field */
+  protected $_forcedvalue = NULL;    /** forced value for the field */
   protected $_help        = NULL;    /** help message */
   protected $_hookmanager = NULL;    /** hook manager */
   protected $_label       = '';      /** label of the field */
   protected $_required    = FALSE;   /** is this field required ? */
   protected $_rules       = array(); /** standard constraint rules */
-  protected $_value       = NULL;    /** forced value for the field */
   protected $_values      = NULL;    /** allowed values for the field */
 
 
@@ -75,6 +75,7 @@ abstract class JConfig_Core_Field
     // Load values from config
     $this->_driver      = $this->_config['driver'];
     $this->_extraparams = (isset($this->_config['extraparams'])?($this->_config['extraparams']):(array()));
+    $this->_forcedvalue = (isset($this->_config['forcedvalue'])?($this->_config['forcedvalue']):(NULL));
     $this->_label       = $this->_config['label'];
     $this->_help        = (isset($this->_config['help'])?($this->_config['help']):(NULL));
     $this->_required    = (isset($this->_config['required'])?($this->_config['required']):(FALSE));
@@ -96,7 +97,7 @@ abstract class JConfig_Core_Field
    */
   protected function _load_hookmanager()
   {
-    $this->_hookmanager = JConfig_HookManager::factory();
+    $this->_hookmanager = JConfig_HookManager::factory($this);
 
     if (isset($this->_config['hooks']))
     {
@@ -207,6 +208,19 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Add validation rules to a Validation instance for this field
+   *
+   * @param Validation &$validation Validation instance
+   *
+   * @return int Number of rules added
+   */
+  public function add_validation_rules(Validation & $validation)
+  {
+    return $this->_hookmanager->add_validation_rules($validation);
+  }
+
+
+  /**
    * Generates a formo field configuration for this field
    *
    * @param Jelly_Model $model Model instance
@@ -240,6 +254,61 @@ abstract class JConfig_Core_Field
     }
 
     return $formo_params;
+  }
+
+
+  /**
+   * Get this fields' alias
+   *
+   * @return string Alias
+   */
+  public function get_alias()
+  {
+    return $this->_alias;
+  }
+
+
+  /**
+   * Get this fields' error state
+   *
+   * @return mixed Error state
+   */
+  public function get_error()
+  {
+    return $this->_error;
+  }
+
+
+  /**
+   * Get this fields' forced value
+   *
+   * @return mixed Forced value
+   */
+  public function get_forcedvalue()
+  {
+    return $this->_forcedvalue;
+  }
+
+
+  /**
+   * Get this fields' required flag
+   *
+   * @return bool Is this field required ?
+   */
+  public function get_required()
+  {
+    return $this->_required;
+  }
+
+
+  /**
+   * Get this fields' values
+   *
+   * @return array Values
+   */
+  public function get_values()
+  {
+    return $this->_values;
   }
 
 
@@ -291,15 +360,15 @@ abstract class JConfig_Core_Field
 
 
   /**
-   * Set internal value
+   * Set internal forced value
    *
-   * @param mixed $value Value
+   * @param mixed $forcedvalue Forced value
    *
    * @return this
    */
-  public function set_value($value)
+  public function set_forcedvalue($forcedvalue)
   {
-    $this->_value = $value;
+    $this->_forcedvalue = $forcedvalue;
   }
 
 

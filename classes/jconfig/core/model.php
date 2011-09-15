@@ -112,6 +112,26 @@ abstract class JConfig_Core_Model
 
 
   /**
+   * Add validation rules to a Validation instance for this model
+   *
+   * @param Validation &$validation Validation instance
+   *
+   * @return int Number of rules added
+   */
+  public function add_validation_rules(Validation & $validation)
+  {
+    $nb_rules = 0;
+
+    foreach ($this->_fields as $field)
+    {
+      $nb_rules += $field->add_validation_rules($validation);
+    }
+
+    return $nb_rules;
+  }
+
+
+  /**
    * Generates a list of formo fields' configuration
    *
    * @param Jelly_Model $model         Model instance

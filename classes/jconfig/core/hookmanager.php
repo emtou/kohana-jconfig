@@ -32,6 +32,7 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_HookManager
 {
+  protected $_field = NULL;      /** Reference to the field */
   protected $_hooks = array();   /** Array of JConfig_Hook */
 
 
@@ -40,21 +41,26 @@ abstract class JConfig_Core_HookManager
    *
    * Can't be called, the factory() method must be used.
    *
+   * @param JConfig_Field &$field Reference to the field
+   *
    * @return JConfig_HookManager
    */
-  protected function __construct()
+  protected function __construct(JConfig_Field & $field)
   {
+    $this->_field = $field;
   }
 
 
   /**
    * Create a chainable instance of the JConfig_HookManager class
    *
+   * @param JConfig_Field &$field Reference to the field
+   *
    * @return JConfig_HookManager
    */
-  public static function factory()
+  public static function factory(JConfig_Field & $field)
   {
-    return new JConfig_HookManager;
+    return new JConfig_HookManager($field);
   }
 
 
@@ -69,10 +75,102 @@ abstract class JConfig_Core_HookManager
   {
     foreach ($hooks_config as $hook)
     {
+      $hook->set_hookmanager($this);
+
       $this->_hooks[] = $hook;
     }
 
     return $this;
+  }
+
+
+  /**
+   * Add validation rules to a Validation instance for all the hooks
+   *
+   * @param Validation &$validation Validation instance
+   *
+   * @return int Number of rules added
+   */
+  public function add_validation_rules(Validation & $validation)
+  {
+    $nb_rules = 0;
+
+    // @hack add a validation rule
+    $nb_rules++;
+
+    $callback = function(Validation $validation, $alias, $value, Jelly_Model $model, JConfig_HookManager $hookmanager)
+    {
+      return $hookmanager->check($validation, $alias, $value, $model);
+    };
+
+    $validation->rule(
+        $this->_field->get_alias(),
+        $callback,
+        array(':validation', ':field', ':value', ':model', $this)
+    );
+
+    return $nb_rules;
+  }
+
+
+  /**
+   * Validates a field with the hooks
+   *
+   * @param Validation  $validation Validation instance
+   * @param string      $alias      Alias of the fied to validate
+   * @param mixed       $value      Current value of the field
+   * @param Jelly_Model $model      Current state of the model
+   *
+   * @return bool Is this field valid ?
+   */
+  public function check(Validation $validation, $alias, $value, Jelly_Model $model)
+  {
+    $field = clone $this->_field;
+
+    $this->run($model, $field);
+
+    // Error from a hook
+    if (is_string($field->get_error()))
+    {
+      $validation->error($alias, $field->get_error());
+      return FALSE;
+    }
+
+    // Empty required field
+    if ($field->get_required() AND $value == '')
+    {
+      $validation->error($alias, 'required');
+      return FALSE;
+    }
+
+    // Mismatching forced value
+    if ( ! is_null($field->get_forcedvalue())
+        AND $value == $field->get_forcedvalue())
+    {
+      $validation->error($alias, 'mismatching_forced_value', array(':forcedvalue' => $field->get_forcedvalue()));
+      return FALSE;
+    }
+
+    // Value not allowed
+    if (sizeof($field->get_values()) > 0
+        AND ! in_array($value, $field->get_values()))
+    {
+      $validation->error($alias, 'value_not_allowed', array(':allowedvalues' => implode(', ', $field->get_values())));
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+
+  /**
+   * Get the field linked to this hookmanager
+   *
+   * @return JConfig_Field
+   */
+  public function get_field()
+  {
+    return $this->_field;
   }
 
 
