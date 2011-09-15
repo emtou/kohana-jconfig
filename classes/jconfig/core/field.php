@@ -302,6 +302,17 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Get this fields' values
+   *
+   * @return array Values
+   */
+  public function get_values()
+  {
+    return $this->_values;
+  }
+
+
+  /**
    * Initialises the Jelly field
    *
    * @return Jelly_Field instance

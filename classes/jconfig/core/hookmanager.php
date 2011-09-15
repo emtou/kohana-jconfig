@@ -147,7 +147,15 @@ abstract class JConfig_Core_HookManager
     if ( ! is_null($field->get_forcedvalue())
         AND $value == $field->get_forcedvalue())
     {
-      $validation->error($alias, 'forced_value', array(':forcedvalue' => $field->get_forcedvalue()));
+      $validation->error($alias, 'mismatching_forced_value', array(':forcedvalue' => $field->get_forcedvalue()));
+      return FALSE;
+    }
+
+    // Value not allowed
+    if (sizeof($field->get_values()) > 0
+        AND ! in_array($value, $field->get_values()))
+    {
+      $validation->error($alias, 'value_not_allowed', array(':allowedvalues' => implode(', ', $field->get_values())));
       return FALSE;
     }
 
