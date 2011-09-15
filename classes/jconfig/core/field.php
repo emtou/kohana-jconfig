@@ -257,6 +257,17 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Get this fields' alias
+   *
+   * @return string Alias
+   */
+  public function get_alias()
+  {
+    return $this->_alias;
+  }
+
+
+  /**
    * Initialises the Jelly field
    *
    * @return Jelly_Field instance
