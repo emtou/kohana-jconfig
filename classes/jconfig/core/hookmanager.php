@@ -105,6 +105,17 @@ abstract class JConfig_Core_HookManager
 
 
   /**
+   * Get the field linked to this hookmanager
+   *
+   * @return JConfig_Field
+   */
+  public function get_field()
+  {
+    return $this->_field;
+  }
+
+
+  /**
    * Get all possible values for a field
    *
    * @param JConfig_Field $field Field to look into
