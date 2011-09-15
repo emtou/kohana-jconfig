@@ -80,6 +80,13 @@ abstract class JConfig_Core_Hook_Result
         }
         return TRUE;
 
+      case 'forcedvalue' :
+        if (is_null($alias))
+        {
+          $field->set_forcedvalue(( ! is_null($this->_value)?($this->_value):NULL));
+        }
+        return TRUE;
+
       case 'required' :
         if (is_null($alias))
         {
@@ -94,12 +101,6 @@ abstract class JConfig_Core_Hook_Result
         }
         return TRUE;
 
-      case 'value' :
-        if (is_null($alias))
-        {
-          $field->set_value(( ! is_null($this->_value)?($this->_value):''));
-        }
-        return TRUE;
     }
 
     throw new JConfig_Exception(

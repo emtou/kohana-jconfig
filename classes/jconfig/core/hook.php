@@ -61,25 +61,6 @@ abstract class JConfig_Core_Hook
 
 
   /**
-   * Validates a field with this hook
-   *
-   * @param Validation  $validation Validation instance
-   * @param string      $alias      Alias of the fied to validate
-   * @param mixed       $value      Current value of the field
-   * @param Jelly_Model $model      Current state of the model
-   *
-   * @return bool Is this field valid ?
-   */
-  public function check(Validation $validation, $alias, $value, Jelly_Model $model)
-  {
-    // @hack
-    // $validation->error($alias, 'hook');
-    // return FALSE;
-    return TRUE;
-  }
-
-
-  /**
    * Adds a condition to the internal container
    *
    * @param string $what     What does the condition apply to ?

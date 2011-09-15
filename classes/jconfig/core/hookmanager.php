@@ -125,10 +125,30 @@ abstract class JConfig_Core_HookManager
    */
   public function check(Validation $validation, $alias, $value, Jelly_Model $model)
   {
-    foreach ($this->_hooks as $hook)
+    $field = clone $this->_field;
+
+    $this->run($model, $field);
+
+    // Error from a hook
+    if (is_string($field->get_error()))
     {
-      if ( ! $hook->check($validation, $alias, $value, $model))
-        return FALSE;
+      $validation->error($alias, $field->get_error());
+      return FALSE;
+    }
+
+    // Empty required field
+    if ($field->get_required() AND $value == '')
+    {
+      $validation->error($alias, 'required');
+      return FALSE;
+    }
+
+    // Mismatching forced value
+    if ( ! is_null($field->get_forcedvalue())
+        AND $value == $field->get_forcedvalue())
+    {
+      $validation->error($alias, 'forced_value', array(':forcedvalue' => $field->get_forcedvalue()));
+      return FALSE;
     }
 
     return TRUE;
