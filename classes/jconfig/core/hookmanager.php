@@ -145,7 +145,7 @@ abstract class JConfig_Core_HookManager
 
     // Mismatching forced value
     if ( ! is_null($field->get_forcedvalue())
-        AND $value == $field->get_forcedvalue())
+        AND $value != $field->get_forcedvalue())
     {
       $validation->error($alias, 'mismatching_forced_value', array(':forcedvalue' => $field->get_forcedvalue()));
       return FALSE;
