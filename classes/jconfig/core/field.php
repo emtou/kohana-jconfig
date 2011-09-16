@@ -225,6 +225,8 @@ abstract class JConfig_Core_Field
    */
   public function formo($model)
   {
+    $this->reset();
+
     // Run hooks
     $this->_hookmanager->run($model, $this);
 
