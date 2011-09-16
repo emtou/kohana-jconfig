@@ -83,7 +83,7 @@ abstract class JConfig_Core_Hook_Result
       case 'forcedvalue' :
         if (is_null($alias))
         {
-          $field->set_forcedvalue(( ! is_null($this->_value)?($this->_value):NULL));
+          $field->set_forcedvalue(( ! is_null($this->_value)?($this->_value):(NULL)));
         }
         return TRUE;
 
