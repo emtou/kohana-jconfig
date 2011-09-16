@@ -32,19 +32,20 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_Field
 {
-  protected $_alias       = '';      /** alias of the field */
-  protected $_config      = NULL;    /** driver for the field */
-  protected $_description = '';      /** description of the field */
-  protected $_driver      = NULL;    /** configuration array */
-  protected $_error       = FALSE;   /** is this field in error state ? */
-  protected $_extraparams = array(); /** extra params for the jelly field */
-  protected $_forcedvalue = NULL;    /** forced value for the field */
-  protected $_help        = NULL;    /** help message */
-  protected $_hookmanager = NULL;    /** hook manager */
-  protected $_label       = '';      /** label of the field */
-  protected $_required    = FALSE;   /** is this field required ? */
-  protected $_rules       = array(); /** standard constraint rules */
-  protected $_values      = NULL;    /** allowed values for the field */
+  protected $_alias        = '';      /** alias of the field */
+  protected $_config       = NULL;    /** driver for the field */
+  protected $_description  = '';      /** description of the field */
+  protected $_driver       = NULL;    /** configuration array */
+  protected $_error        = FALSE;   /** is this field in error state ? */
+  protected $_extraparams  = array(); /** extra params for the jelly field */
+  protected $_forcedvalue  = NULL;    /** forced value for the field */
+  protected $_formo_params = NULL;    /** extra formo params */
+  protected $_help         = NULL;    /** help message */
+  protected $_hookmanager  = NULL;    /** hook manager */
+  protected $_label        = '';      /** label of the field */
+  protected $_required     = FALSE;   /** is this field required ? */
+  protected $_rules        = array(); /** standard constraint rules */
+  protected $_values       = NULL;    /** allowed values for the field */
 
 
   /**
@@ -74,15 +75,16 @@ abstract class JConfig_Core_Field
   protected function _load()
   {
     // Load values from config
-    $this->_description = (isset($this->_config['description'])?($this->_config['description']):'');
-    $this->_driver      = $this->_config['driver'];
-    $this->_extraparams = (isset($this->_config['extraparams'])?($this->_config['extraparams']):(array()));
-    $this->_forcedvalue = (isset($this->_config['forcedvalue'])?($this->_config['forcedvalue']):(NULL));
-    $this->_label       = $this->_config['label'];
-    $this->_help        = (isset($this->_config['help'])?($this->_config['help']):(NULL));
-    $this->_required    = (isset($this->_config['required'])?($this->_config['required']):(FALSE));
-    $this->_rules       = (isset($this->_config['rules'])?($this->_config['rules']):(array()));
-    $this->_values      = (isset($this->_config['values'])?($this->_config['values']):(NULL));
+    $this->_description  = (isset($this->_config['description'])?($this->_config['description']):'');
+    $this->_driver       = $this->_config['driver'];
+    $this->_extraparams  = (isset($this->_config['extraparams'])?($this->_config['extraparams']):(array()));
+    $this->_forcedvalue  = (isset($this->_config['forcedvalue'])?($this->_config['forcedvalue']):(NULL));
+    $this->_formo_params = (isset($this->_config['formo_params'])?($this->_config['formo_params']):(NULL));
+    $this->_label        = $this->_config['label'];
+    $this->_help         = (isset($this->_config['help'])?($this->_config['help']):(NULL));
+    $this->_required     = (isset($this->_config['required'])?($this->_config['required']):(FALSE));
+    $this->_rules        = (isset($this->_config['rules'])?($this->_config['rules']):(array()));
+    $this->_values       = (isset($this->_config['values'])?($this->_config['values']):(NULL));
 
     $this->_load_hookmanager();
 
@@ -236,7 +238,13 @@ abstract class JConfig_Core_Field
     // Run hooks
     $this->_hookmanager->run($model, $this);
 
-    $formo_params             = array();
+    $formo_params = array();
+
+    if (is_array($this->_formo_params))
+    {
+      $formo_params = $this->_formo_params;
+    }
+
     $formo_params['alias']    = $this->_alias;
     $formo_params['label']    = $this->_label;
     $formo_params['required'] = $this->_required;
@@ -247,12 +255,17 @@ abstract class JConfig_Core_Field
       $formo_params['aide'] = $this->_help;
     }
 
-    // HACK
-    $formo_params['driver'] = 'select';
 
     if ($this->_values)
     {
+      // @hack
+      $formo_params['driver']  = 'select';
       $formo_params['options'] = array_merge(array('--select--'=>''), $this->_values);
+    }
+    else
+    {
+      // @hack
+      $formo_params['driver'] = 'input';
     }
 
     return $formo_params;
