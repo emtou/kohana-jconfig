@@ -33,7 +33,7 @@ defined('SYSPATH') OR die('No direct access allowed.');
 abstract class JConfig_Core_HookManager
 {
   protected $_field = NULL;      /** Reference to the field */
-  protected $_hooks = array();   /** Array of JConfig_Hook */
+  protected $_hooks = array();   /** Array of array of JConfig_Hook */
 
 
   /**
@@ -48,6 +48,10 @@ abstract class JConfig_Core_HookManager
   protected function __construct(JConfig_Field & $field)
   {
     $this->_field = $field;
+    $this->_hooks = array(
+      'validation' => array(),
+      'update'     => array(),
+    );
   }
 
 
@@ -73,11 +77,14 @@ abstract class JConfig_Core_HookManager
    */
   public function add_hooks(array $hooks_config)
   {
-    foreach ($hooks_config as $hook)
+    foreach ($hooks_config as $alias => $hooks)
     {
-      $hook->set_hookmanager($this);
+      foreach ($hooks as $hook)
+      {
+        $hook->set_hookmanager($this);
+      }
 
-      $this->_hooks[] = $hook;
+      $this->_hooks[$alias] = $hooks;
     }
 
     return $this;
@@ -185,7 +192,7 @@ abstract class JConfig_Core_HookManager
   public function possible_values(JConfig_Field $field)
   {
     $values = array();
-    foreach ($this->_hooks as $hook)
+    foreach ($this->_hooks['validation'] as $hook)
     {
       $values = array_merge($values, $hook->possible_values($field));
     }
@@ -203,7 +210,7 @@ abstract class JConfig_Core_HookManager
    */
   public function run(Jelly_Model $model, JConfig_Field & $field)
   {
-    foreach ($this->_hooks as $hook)
+    foreach ($this->_hooks['validation'] as $hook)
     {
       if ($hook->run($model, $field))
       {
