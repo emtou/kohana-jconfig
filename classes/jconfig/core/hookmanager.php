@@ -221,4 +221,24 @@ abstract class JConfig_Core_HookManager
     return $this;
   }
 
+
+  /**
+   * Run optional update hooks on a value
+   *
+   * @param Jelly_Model   &$model Model to update value in
+   * @param JConfig_Field &$field Field to run hooks on
+   * @param mixed         &$value Value to populate the model with
+   *
+   * @return this
+   */
+  public function update_value(Jelly_Model & $model, JConfig_Field & $field, & $value)
+  {
+    foreach ($this->_hooks['update'] as $hook)
+    {
+      $hook->run_update($model, $field, $value);
+    }
+
+    return $this;
+  }
+
 } // End JConfig_Core_HookManager

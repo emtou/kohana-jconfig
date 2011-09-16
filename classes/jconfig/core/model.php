@@ -171,4 +171,26 @@ abstract class JConfig_Core_Model
     $meta->table($this->_config['tablename'])->fields($fields);
   }
 
+
+  /**
+   * Update fields' values from an array
+   *
+   * @param Jelly_Model &$model Model to update values in
+   * @param array       $values Values to populate the model with
+   *
+   * @return this
+   */
+  public function update_values(Jelly_Model & $model, array $values)
+  {
+    foreach ($values as $alias => $value)
+    {
+      if (isset($this->_fields[$alias]))
+      {
+        $this->_fields[$alias]->update_value($model, $value);
+      }
+    }
+
+    return $this;
+  }
+
 }

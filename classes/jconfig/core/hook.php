@@ -69,7 +69,7 @@ abstract class JConfig_Core_Hook
    *
    * @return this
    */
-  public function condition($what, $operator, $value)
+  public function condition($what, $operator, $value = NULL)
   {
     $this->_conditions[] = JConfig_Hook_Condition::factory($what, $operator, $value);
 
@@ -137,6 +137,38 @@ abstract class JConfig_Core_Hook
     foreach ($this->_results as $result)
     {
       $result->apply($model, $field);
+    }
+
+    return TRUE;
+  }
+
+
+  /**
+   * Run this update hook on a value
+   *
+   * @param Jelly_Model   &$model Model to update value in
+   * @param JConfig_Field &$field Field to run hook on
+   * @param mixed         &$value Value to populate the model with
+   *
+   * @return this
+   */
+  public function run_update(Jelly_Model & $model, JConfig_Field & $field, & $value)
+  {
+    $must_run = TRUE;
+    foreach ($this->_conditions as $condition)
+    {
+      if ( ! $condition->applies($model, $field, $value))
+      {
+        $must_run = FALSE;
+      }
+    }
+
+    if ( ! $must_run)
+      return FALSE;
+
+    foreach ($this->_results as $result)
+    {
+      $result->apply($model, $field, $value);
     }
 
     return TRUE;

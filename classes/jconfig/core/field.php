@@ -428,4 +428,23 @@ abstract class JConfig_Core_Field
     return $this;
   }
 
+
+  /**
+   * Update value in the model
+   *
+   * @param Jelly_Model &$model Model to update value in
+   * @param mixed       $value  Value to populate the model with
+   *
+   * @return this
+   */
+  public function update_value(Jelly_Model & $model, $value)
+  {
+    // Run hooks
+    $this->_hookmanager->update_value($model, $this, $value);
+
+    $model->{$this->_alias} = $value;
+
+    return $this;
+  }
+
 }
