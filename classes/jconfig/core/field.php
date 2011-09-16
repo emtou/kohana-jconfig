@@ -74,17 +74,7 @@ abstract class JConfig_Core_Field
    */
   protected function _load()
   {
-    // Load values from config
-    $this->_description  = (isset($this->_config['description'])?($this->_config['description']):'');
-    $this->_driver       = $this->_config['driver'];
-    $this->_extraparams  = (isset($this->_config['extraparams'])?($this->_config['extraparams']):(array()));
-    $this->_forcedvalue  = (isset($this->_config['forcedvalue'])?($this->_config['forcedvalue']):(NULL));
-    $this->_formo_params = (isset($this->_config['formo_params'])?($this->_config['formo_params']):(NULL));
-    $this->_label        = $this->_config['label'];
-    $this->_help         = (isset($this->_config['help'])?($this->_config['help']):(NULL));
-    $this->_required     = (isset($this->_config['required'])?($this->_config['required']):(FALSE));
-    $this->_rules        = (isset($this->_config['rules'])?($this->_config['rules']):(array()));
-    $this->_values       = (isset($this->_config['values'])?($this->_config['values']):(NULL));
+    $this->reset();
 
     $this->_load_hookmanager();
 
@@ -348,6 +338,27 @@ abstract class JConfig_Core_Field
 
     $driver = $this->_driver;
     return new $driver($params);
+  }
+
+
+  /**
+   * Resets all parameters from configuration (except hooks)
+   *
+   * @return this
+   */
+  public function reset()
+  {
+    // Load values from config
+    $this->_description  = (isset($this->_config['description'])?($this->_config['description']):'');
+    $this->_driver       = $this->_config['driver'];
+    $this->_extraparams  = (isset($this->_config['extraparams'])?($this->_config['extraparams']):(array()));
+    $this->_forcedvalue  = (isset($this->_config['forcedvalue'])?($this->_config['forcedvalue']):(NULL));
+    $this->_formo_params = (isset($this->_config['formo_params'])?($this->_config['formo_params']):(NULL));
+    $this->_label        = $this->_config['label'];
+    $this->_help         = (isset($this->_config['help'])?($this->_config['help']):(NULL));
+    $this->_required     = (isset($this->_config['required'])?($this->_config['required']):(FALSE));
+    $this->_rules        = (isset($this->_config['rules'])?($this->_config['rules']):(array()));
+    $this->_values       = (isset($this->_config['values'])?($this->_config['values']):(NULL));
   }
 
 
