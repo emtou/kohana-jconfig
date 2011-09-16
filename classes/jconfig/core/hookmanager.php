@@ -126,6 +126,7 @@ abstract class JConfig_Core_HookManager
   public function check(Validation $validation, $alias, $value, Jelly_Model $model)
   {
     $field = clone $this->_field;
+    $field->reset();
 
     $this->run($model, $field);
 
