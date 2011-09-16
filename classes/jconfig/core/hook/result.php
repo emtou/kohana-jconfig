@@ -178,6 +178,7 @@ abstract class JConfig_Core_Hook_Result
    *
    * @param Jelly_Model   $model  Jelly model instance
    * @param JConfig_Field &$field Field to run hooks on
+   * @param mixed         &$value Optional value
    *
    * @return bool Has the result been applied ?
    *
@@ -186,7 +187,7 @@ abstract class JConfig_Core_Hook_Result
    * @throws JConfig_Exception Can't apply result: unknown result type :restype
    * @throws JConfig_Exception Can't apply result: unknown result :reswhat
    */
-  public function apply(Jelly_Model $model, JConfig_Field & $field)
+  public function apply(Jelly_Model $model, JConfig_Field & $field, & $value = NULL)
   {
     $submatches = array();
     if (preg_match('/^:([^:]+)(:(.+))?$/D', $this->_what, $submatches))
@@ -200,6 +201,10 @@ abstract class JConfig_Core_Hook_Result
             return $this->_apply_to_field($submatches[2], $model, $field);
           else
             return $this->_apply_to_field(NULL, $model, $field);
+
+        case 'value' :
+          $value = $this->_operation;
+          return TRUE;
 
         default :
           throw new JConfig_Exception(
