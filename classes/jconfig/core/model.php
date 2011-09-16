@@ -195,6 +195,46 @@ abstract class JConfig_Core_Model
 
 
   /**
+   * Translates an error path in plain human language
+   *
+   * @param string $error Error text
+   *
+   * @return string Error in plain human language
+   */
+  public function translate_error($error)
+  {
+    // Extract model alias from error text
+    $submatches = array();
+    if (preg_match('/^jconfig\/[^\/]+\/_external\.([^\.]+)\.(.+)$/D', $error, $submatches))
+    {
+      $alias     = $submatches[1];
+      $errorcode = $submatches[2];
+
+      switch ($errorcode)
+      {
+        case 'required':
+          return __(
+              ':field must not be empty',
+              array(':field' => $this->_fields[$alias]->get_label())
+          );
+
+        case 'mismatching_forced_value':
+        case 'value_not_allowed':
+          return __(
+              ':field cannot have this value',
+              array(':field' => $this->_fields[$alias]->get_label())
+          );
+
+        default :
+          return $errorcode;
+      }
+    }
+
+    return $error;
+  }
+
+
+  /**
    * Update fields' values from an array
    *
    * @param Jelly_Model &$model Model to update values in

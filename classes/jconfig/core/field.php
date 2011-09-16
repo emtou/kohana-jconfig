@@ -317,6 +317,16 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Get this fields' label
+   *
+   * @return string Label
+   */
+  public function get_label()
+  {
+    return $this->_label;
+  }
+
+  /**
    * Get this fields' required flag
    *
    * @return bool Is this field required ?

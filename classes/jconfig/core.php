@@ -152,4 +152,28 @@ abstract class JConfig_Core
     return isset($this->_models[$model_alias]);
   }
 
+
+  /**
+   * Translates an error path in plain human language
+   *
+   * @param string $error       Error text
+   *
+   * @return string Error in plain human language
+   */
+  public function translate_error($error)
+  {
+    // Extract model alias from error text
+    $submatches = array();
+    if (preg_match('/^jconfig\/([^\/]+)\//', $error, $submatches))
+    {
+      $model_alias = $submatches[1];
+
+      $this->load($model_alias);
+
+      return $this->_models[$model_alias]->translate_error($error);
+    }
+
+    return $error;
+  }
+
 }
