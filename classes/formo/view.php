@@ -45,14 +45,14 @@ class Formo_View extends Formo_Core_View
     $internal_error = $this->_field->error();
 
     if ($internal_error)
-      return 'INTERNAL: '.$internal_error;
+      return $internal_error;
 
     if (isset($this->_field->external_errors))
     {
       if (is_array($this->_field->external_errors))
-        return 'EXTERNAL: '.$this->_field->external_errors[0];
+        return $this->_field->external_errors[0];
 
-      return 'EXTERNAL: '.$this->_field->external_errors;
+      return $this->_field->external_errors;
     }
 
     return '';
