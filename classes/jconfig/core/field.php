@@ -34,6 +34,7 @@ abstract class JConfig_Core_Field
 {
   protected $_alias       = '';      /** alias of the field */
   protected $_config      = NULL;    /** driver for the field */
+  protected $_description = '';      /** description of the field */
   protected $_driver      = NULL;    /** configuration array */
   protected $_error       = FALSE;   /** is this field in error state ? */
   protected $_extraparams = array(); /** extra params for the jelly field */
@@ -73,6 +74,7 @@ abstract class JConfig_Core_Field
   protected function _load()
   {
     // Load values from config
+    $this->_description = (isset($this->_config['description'])?($this->_config['description']):'');
     $this->_driver      = $this->_config['driver'];
     $this->_extraparams = (isset($this->_config['extraparams'])?($this->_config['extraparams']):(array()));
     $this->_forcedvalue = (isset($this->_config['forcedvalue'])?($this->_config['forcedvalue']):(NULL));
@@ -269,6 +271,17 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Get this fields' description
+   *
+   * @return string Description of the field
+   */
+  public function get_description()
+  {
+    return $this->_description;
+  }
+
+
+  /**
    * Get this fields' error state
    *
    * @return mixed Error state
@@ -330,6 +343,19 @@ abstract class JConfig_Core_Field
 
     $driver = $this->_driver;
     return new $driver($params);
+  }
+
+
+  /**
+   * Set internal description
+   *
+   * @param string $description Description of the field
+   *
+   * @return this
+   */
+  public function set_description($description)
+  {
+    $this->_description = $description;
   }
 
 

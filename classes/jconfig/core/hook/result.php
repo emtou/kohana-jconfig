@@ -73,6 +73,13 @@ abstract class JConfig_Core_Hook_Result
   {
     switch ($this->_operation)
     {
+      case 'description' :
+        if (is_null($alias))
+        {
+          $field->set_description(( ! is_null($this->_value)?($this->_value):''));
+        }
+        return TRUE;
+
       case 'error' :
         if (is_null($alias))
         {
