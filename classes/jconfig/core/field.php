@@ -255,17 +255,9 @@ abstract class JConfig_Core_Field
       $formo_params['aide'] = $this->_help;
     }
 
-
     if ($this->_values)
     {
-      // @hack
-      $formo_params['driver']  = 'select';
       $formo_params['options'] = array_merge(array('--select--'=>''), $this->_values);
-    }
-    else
-    {
-      // @hack
-      $formo_params['driver'] = 'input';
     }
 
     return $formo_params;
