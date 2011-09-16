@@ -255,6 +255,24 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Get formo field value from the model
+   *
+   * @param Jelly_Model &$model Model to fetch values from
+   *
+   * @return mixed formo value
+   */
+  public function formo_value(Jelly_Model & $model)
+  {
+    $value = $model->{$this->_alias};
+
+    // Run hooks
+    $this->_hookmanager->formo_value($model, $this, $value);
+
+    return $value;
+  }
+
+
+  /**
    * Get this fields' alias
    *
    * @return string Alias

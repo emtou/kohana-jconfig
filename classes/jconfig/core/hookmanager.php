@@ -49,6 +49,7 @@ abstract class JConfig_Core_HookManager
   {
     $this->_field = $field;
     $this->_hooks = array(
+      'formovalue' => array(),
       'validation' => array(),
       'update'     => array(),
     );
@@ -168,6 +169,26 @@ abstract class JConfig_Core_HookManager
     }
 
     return TRUE;
+  }
+
+
+  /**
+   * Run optional formovalue hooks on a value
+   *
+   * @param Jelly_Model   &$model Model instance feed hooks with
+   * @param JConfig_Field &$field Field to run hooks from
+   * @param mixed         &$value Value to interact on
+   *
+   * @return this
+   */
+  public function formo_value(Jelly_Model & $model, JConfig_Field & $field, & $value)
+  {
+    foreach ($this->_hooks['formovalue'] as $hook)
+    {
+      $hook->run_update($model, $field, $value);
+    }
+
+    return $this;
   }
 
 

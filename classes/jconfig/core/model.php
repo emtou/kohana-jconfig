@@ -153,6 +153,28 @@ abstract class JConfig_Core_Model
 
 
   /**
+   * Fill in array with model fields values
+   *
+   * @param Jelly_Model &$model  Model to fetch values from
+   * @param array       &$values Array to fill in
+   *
+   * @return this
+   */
+  public function formo_values(Jelly_Model & $model, array & $values)
+  {
+    foreach (array_keys($values) as $alias)
+    {
+      if (isset($this->_fields[$alias]))
+      {
+        $values[$alias] = $this->_fields[$alias]->formo_value($model);
+      }
+    }
+
+    return $this;
+  }
+
+
+  /**
    * Initialises the Jelly model
    *
    * @param Jelly_Meta &$meta Jelly meta instance
