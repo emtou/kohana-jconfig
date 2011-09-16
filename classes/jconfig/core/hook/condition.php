@@ -76,6 +76,9 @@ abstract class JConfig_Core_Hook_Condition
 
       case 'match' :
         return (preg_match($this->_value, $value) == 1);
+
+      case 'required' :
+        return $field->get_required(( ! is_null($this->_value)?($this->_value):(TRUE)));
     }
 
     throw new JConfig_Exception(
@@ -126,24 +129,41 @@ abstract class JConfig_Core_Hook_Condition
    *
    * @param Jelly_Model   $model  Jelly model instance
    * @param JConfig_Field &$field Field to run hooks on
+   * @param mixed         $value  Optional value
    *
    * @return bool Does the condition apply ?
    *
    * @throws JConfig_Exception Can't check if condition applies: unknown condition type :condtype
    * @throws JConfig_Exception Can't check if condition applies: unknown condition :condwhat
    */
-  public function applies(Jelly_Model $model, JConfig_Field & $field)
+  public function applies(Jelly_Model $model, JConfig_Field & $field, $value = NULL)
   {
     $submatches = array();
-    if (preg_match('/^:([^:]+):(.+)$/D', $this->_what, $submatches))
+    if (preg_match('/^:([^:]+)(:(.+))?$/D', $this->_what, $submatches))
     {
       $type  = $submatches[1];
-      $alias = $submatches[2];
 
       switch ($type)
       {
         case 'field' :
-          return $this->_applies_to_field($alias, $model, $field);
+          if (isset($submatches[2]))
+          {
+            $alias = $submatches[3];
+            return $this->_applies_to_field($alias, $model, $field);
+          }
+
+          return $this->_applies_operator($value, $model, $field);
+
+        case 'value' :
+          if (is_null($value))
+          {
+            throw new JConfig_Exception(
+              'Can\'t check if value condition applies: no value has been given',
+              array()
+            );
+          }
+
+          return $this->_applies_operator($value, $model, $field);
 
         default :
           throw new JConfig_Exception(
