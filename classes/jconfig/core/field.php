@@ -490,8 +490,12 @@ abstract class JConfig_Core_Field
    */
   public function update_value(Jelly_Model & $model, $value)
   {
-    // Run hooks
-    $this->_hookmanager->update_value($model, $this, $value);
+    // Run validation hooks on a clone of this field
+    $clone = unserialize(serialize($this));
+    $clone->_hookmanager->run($model, $clone);
+
+    // Run update hooks with the clone
+    $this->_hookmanager->update_value($model, $clone, $value);
 
     $model->{$this->_alias} = $value;
 
