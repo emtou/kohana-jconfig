@@ -98,12 +98,17 @@ abstract class JConfig_Core_Hook_Condition
    * @param JConfig_Field $field Field to run hooks on
    *
    * @return bool Does the condition apply ?
+   *
+   * throws JConfig_Exception Can't check if field condition applies: field :alias not found in model
    */
   protected function _applies_to_field($alias, Jelly_Model $model, $field)
   {
     if ( ! isset($model->{$alias}))
     {
-      return FALSE;
+      throw new JConfig_Exception(
+        'Can\'t check if field condition applies: field :alias not found in model',
+        array(':alias' => $alias)
+      );
     }
 
     $value = $model->{$alias};
