@@ -128,6 +128,7 @@ abstract class JConfig_Core_Hook
       if ( ! $condition->applies($model, $field))
       {
         $must_run = FALSE;
+        break;
       }
     }
 
