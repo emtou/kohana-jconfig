@@ -206,16 +206,14 @@ abstract class JConfig_Core_HookManager
   /**
    * Get all possible values for a field
    *
-   * @param JConfig_Field $field Field to look into
-   *
    * @return array Possible values for the field
    */
-  public function possible_values(JConfig_Field $field)
+  public function possible_values()
   {
     $values = array();
     foreach ($this->_hooks['validation'] as $hook)
     {
-      $values = array_merge($values, $hook->possible_values($field));
+      $hook->possible_values($values);
     }
     return $values;
   }

@@ -109,7 +109,7 @@ abstract class JConfig_Core_Field
    */
   protected function _load_rule_hooked_values()
   {
-    $values = $this->_hookmanager->possible_values(clone $this);
+    $values = $this->_hookmanager->possible_values();
 
     if (isset($this->_config['values']))
     {

@@ -80,18 +80,16 @@ abstract class JConfig_Core_Hook
   /**
    * Get all possible values for a field
    *
-   * @param JConfig_Field $field Field to look into
+   * @param array &$values Array of possible values to fill
    *
-   * @return array Possible values for the field
+   * @return null
    */
-  public function possible_values(JConfig_Field $field)
+  public function possible_values(array & $values)
   {
-    $values = array();
     foreach ($this->_results as $result)
     {
-      $values = array_merge($values, $result->possible_values($field));
+      $result->possible_values($values);
     }
-    return $values;
   }
 
 
