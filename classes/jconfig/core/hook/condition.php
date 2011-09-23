@@ -102,7 +102,7 @@ abstract class JConfig_Core_Hook_Condition
    *
    * @return bool Does the condition apply ?
    *
-   * throws JConfig_Exception Can't check if field condition applies: field :alias not found in model
+   * @throws JConfig_Exception Can't check if field condition applies: field :alias not found in model
    */
   protected function _applies_to_field($alias, Jelly_Model $model, $field)
   {
