@@ -77,6 +77,9 @@ abstract class JConfig_Core_Hook_Condition
       case 'match' :
         return (preg_match($this->_value, $value) == 1);
 
+      case '!match' :
+        return (preg_match($this->_value, $value) == 0);
+
       case 'required' :
         $expected_required = (is_bool($this->_value)?($this->_value):(TRUE));
         $field_required    = $field->get_required();
