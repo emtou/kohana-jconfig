@@ -175,6 +175,19 @@ abstract class JConfig_Core_Model
 
 
   /**
+   * Gets an internal field
+   *
+   * @param string $alias Alias of the field
+   *
+   * @return JConfig_Field Internal field
+   */
+  public function get_field($alias)
+  {
+    return $this->_fields[$alias];
+  }
+
+
+  /**
    * Initialises the Jelly model
    *
    * @param Jelly_Meta &$meta Jelly meta instance
