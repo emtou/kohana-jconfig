@@ -119,7 +119,22 @@ abstract class JConfig_Core_Field
     if (sizeof($values) > 0)
     {
       $values = array_unique(array_values($values));
-      $regex  = '/^('.implode('|', $values).')$/D';
+
+      $new_values = array();
+      $empty_flag = '';
+      foreach ($values as $value)
+      {
+        if ($value == '')
+        {
+          $empty_flag = '?';
+        }
+        else
+        {
+          $new_values[] = preg_replace('/\//', '\/', $value);
+        }
+      }
+
+      $regex = '/^('.implode('|', $new_values).')'.$empty_flag.'$/D';
 
       $this->_rules[] = array('regex', array(':value', $regex));
     }
