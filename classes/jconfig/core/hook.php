@@ -146,18 +146,17 @@ abstract class JConfig_Core_Hook
   /**
    * Run this update hook on a value
    *
-   * @param Jelly_Model   &$model Model to update value in
-   * @param JConfig_Field &$field Field to run hook on
-   * @param mixed         &$value Value to populate the model with
+   * @param Jelly_Model &$model Model to update value in
+   * @param mixed       &$value Value to populate the model with
    *
    * @return this
    */
-  public function run_update(Jelly_Model & $model, JConfig_Field & $field, & $value)
+  public function run_update(Jelly_Model & $model, & $value)
   {
     $must_run = TRUE;
     foreach ($this->_conditions as $condition)
     {
-      if ( ! $condition->applies($model, $field, $value))
+      if ( ! $condition->applies($model, NULL, $value))
       {
         $must_run = FALSE;
       }
@@ -168,7 +167,7 @@ abstract class JConfig_Core_Hook
 
     foreach ($this->_results as $result)
     {
-      $result->apply($model, $field, $value);
+      $result->apply($model, NULL, $value);
     }
 
     return TRUE;

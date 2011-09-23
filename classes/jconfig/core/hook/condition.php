@@ -59,15 +59,15 @@ abstract class JConfig_Core_Hook_Condition
   /**
    * Checks if the condition applies to a known field
    *
-   * @param mixed         $value  Value to check against
-   * @param Jelly_Model   $model  Jelly model instance
-   * @param JConfig_Field &$field Field to run hooks on
+   * @param mixed         $value Value to check against
+   * @param Jelly_Model   $model Jelly model instance
+   * @param JConfig_Field $field Field to run hooks on
    *
    * @return bool Does the condition apply ?
    *
    * @throws JConfig_Exception Can't check if condition applies: unknown condition operator :condoperator
    */
-  protected function _applies_operator($value, Jelly_Model $model, JConfig_Field & $field)
+  protected function _applies_operator($value, Jelly_Model $model, $field)
   {
     switch ($this->_operator)
     {
@@ -78,7 +78,9 @@ abstract class JConfig_Core_Hook_Condition
         return (preg_match($this->_value, $value) == 1);
 
       case 'required' :
-        return $field->get_required(( ! is_null($this->_value)?($this->_value):(TRUE)));
+        $expected_required = (is_bool($this->_value)?($this->_value):(TRUE));
+        $field_required    = $field->get_required();
+        return ($field_required == $expected_required);
     }
 
     throw new JConfig_Exception(
@@ -91,13 +93,13 @@ abstract class JConfig_Core_Hook_Condition
   /**
    * Checks if the condition applies to a known field
    *
-   * @param string        $alias  Alias of the field
-   * @param Jelly_Model   $model  Jelly model instance
-   * @param JConfig_Field &$field Field to run hooks on
+   * @param string        $alias Alias of the field
+   * @param Jelly_Model   $model Jelly model instance
+   * @param JConfig_Field $field Field to run hooks on
    *
    * @return bool Does the condition apply ?
    */
-  protected function _applies_to_field($alias, Jelly_Model $model, JConfig_Field & $field)
+  protected function _applies_to_field($alias, Jelly_Model $model, $field)
   {
     if ( ! isset($model->{$alias}))
     {
@@ -127,25 +129,32 @@ abstract class JConfig_Core_Hook_Condition
   /**
    * Checks if the condition applies
    *
-   * @param Jelly_Model   $model  Jelly model instance
-   * @param JConfig_Field &$field Field to run hooks on
-   * @param mixed         $value  Optional value
+   * @param Jelly_Model   $model Jelly model instance
+   * @param JConfig_Field $field Field to run hooks on
+   * @param mixed         $value Optional value
    *
    * @return bool Does the condition apply ?
    *
    * @throws JConfig_Exception Can't check if condition applies: unknown condition type :condtype
    * @throws JConfig_Exception Can't check if condition applies: unknown condition :condwhat
    */
-  public function applies(Jelly_Model $model, JConfig_Field & $field, $value = NULL)
+  public function applies(Jelly_Model $model, $field, $value = NULL)
   {
     $submatches = array();
     if (preg_match('/^:([^:]+)(:(.+))?$/D', $this->_what, $submatches))
     {
-      $type  = $submatches[1];
+      $type = $submatches[1];
 
       switch ($type)
       {
         case 'field' :
+          if (is_null($field))
+          {
+            throw new JConfig_Exception(
+              'Can\'t check if field condition applies: field conditions not allowed',
+              array()
+            );
+          }
           if (isset($submatches[2]))
           {
             $alias = $submatches[3];
