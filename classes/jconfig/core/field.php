@@ -110,6 +110,12 @@ abstract class JConfig_Core_Field
   protected function _load_rule_hooked_values()
   {
     $values = $this->_hookmanager->possible_values(clone $this);
+
+    if (isset($this->_config['values']))
+    {
+      $values = array_merge($values, $this->_config['values']);
+    }
+
     if (sizeof($values) > 0)
     {
       $values = array_unique(array_values($values));
