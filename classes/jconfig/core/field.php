@@ -494,20 +494,20 @@ abstract class JConfig_Core_Field
    * @param Jelly_Model &$model Model to update value in
    * @param mixed       $value  Value to populate the model with
    *
-   * @return this
+   * @return bool is the update hooked ?
    */
   public function update_value(Jelly_Model & $model, $value)
   {
     // Run validation hooks on a clone of this field
-    $clone = unserialize(serialize($this));
+    $clone = clone($this);
     $clone->_hookmanager->run($model, $clone);
 
     // Run update hooks with the clone
-    $this->_hookmanager->update_value($model, $clone, $value);
+    $ret = $this->_hookmanager->update_value($model, $clone, $value);
 
     $model->{$this->_alias} = $value;
 
-    return $this;
+    return $ret;
   }
 
 }

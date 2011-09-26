@@ -203,7 +203,14 @@ abstract class JConfig_Core_Hook_Result
             return $this->_apply_to_field(NULL, $model, $field);
 
         case 'value' :
-          $value = $this->_operation;
+          if (is_callable($this->_operation))
+          {
+            $value = call_user_func($this->_operation, $model, $field);
+          }
+          else
+          {
+            $value = $this->_operation;
+          }
           return TRUE;
 
         default :

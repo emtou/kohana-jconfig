@@ -257,11 +257,24 @@ abstract class JConfig_Core_Model
    */
   public function update_values(Jelly_Model & $model, array $values)
   {
+    $redo = array();
     foreach ($values as $alias => $value)
     {
       if (isset($this->_fields[$alias]))
       {
-        $this->_fields[$alias]->update_value($model, $value);
+        if ($this->_fields[$alias]->update_value($model, $value))
+        {
+          $redo[] = $alias;
+        }
+      }
+    }
+
+    // redo postponed updates
+    foreach ($redo as $alias)
+    {
+      if (isset($this->_fields[$alias]))
+      {
+        $this->_fields[$alias]->update_value($model, $values[$alias]);
       }
     }
 
