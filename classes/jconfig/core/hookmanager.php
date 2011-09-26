@@ -185,7 +185,7 @@ abstract class JConfig_Core_HookManager
   {
     foreach ($this->_hooks['formovalue'] as $hook)
     {
-      $hook->run_update($model, $field, $value);
+      $hook->run_update($model, $value);
     }
 
     return $this;

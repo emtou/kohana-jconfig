@@ -166,7 +166,9 @@ abstract class JConfig_Core_Hook
 
     foreach ($this->_results as $result)
     {
-      $result->apply($model, NULL, $value);
+      $field = $this->_hookmanager->get_field();
+
+      $result->apply($model, $field, $value);
     }
 
     return TRUE;
