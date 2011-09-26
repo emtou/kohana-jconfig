@@ -74,6 +74,9 @@ abstract class JConfig_Core_Hook_Condition
       case '=' :
         return ($value == $this->_value);
 
+      case '!=' :
+        return ($value != $this->_value);
+
       case 'match' :
         return (preg_match($this->_value, $value) == 1);
 
