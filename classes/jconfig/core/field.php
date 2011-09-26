@@ -278,14 +278,7 @@ abstract class JConfig_Core_Field
     {
       $formo_params['editable'] = FALSE;
 
-      if (isset($formo_params['options']))
-      {
-        $formo_params['options'] = array_merge(array(''=>$this->get_forcedvalue()), $formo_params['options']);
-      }
-      else
-      {
-        $formo_params['value'] = $this->get_forcedvalue();
-      }
+      $formo_params['value'] = $this->get_forcedvalue();
     }
 
     return $formo_params;
