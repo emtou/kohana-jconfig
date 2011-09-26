@@ -154,9 +154,53 @@ abstract class JConfig_Core
 
 
   /**
+   * Parse errors from a validation exception
+   *
+   * @param Jelly_Validation_Exception &$exception Validaiton exception
+   *
+   * @return array errors
+   */
+  public function parse_validation_exception(Jelly_Validation_Exception & $exception)
+  {
+    $errors = array();
+
+    foreach ($exception->errors('jconfig') as $alias => $error)
+    {
+      if ($alias == '_external')
+      {
+        foreach ($error as $alias => $error2)
+        {
+          $error2 = $this->translate_error($error2);
+
+          if ( ! isset($errors[$alias]))
+          {
+            $errors[$alias] = array();
+          }
+
+          $errors[$alias][] = $error2;
+        }
+      }
+      else
+      {
+        $error = $this->translate_error($error);
+
+        if ( ! isset($errors[$alias]))
+        {
+          $errors[$alias] = array();
+        }
+
+        $errors[$alias][] = $error;
+      }
+    }
+
+    return $errors;
+  }
+
+
+  /**
    * Translates an error path in plain human language
    *
-   * @param string $error       Error text
+   * @param string $error Error text
    *
    * @return string Error in plain human language
    */
