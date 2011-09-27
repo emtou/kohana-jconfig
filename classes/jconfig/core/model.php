@@ -184,7 +184,7 @@ abstract class JConfig_Core_Model
 
     foreach ($this->_fields as $field)
     {
-      if (is_null($fields)
+      if (sizeof($fields) == 0
           or isset($fields[$field->get_alias()]))
       {
         $field->add_validation_rules($validation);
