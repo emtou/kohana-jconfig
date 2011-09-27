@@ -119,6 +119,8 @@ abstract class JConfig_Core_HookManager
   /**
    * Validates a field with the hooks
    *
+   * if there already are any validation error, skip these checks
+   *
    * @param Validation  $validation Validation instance
    * @param string      $alias      Alias of the fied to validate
    * @param mixed       $value      Current value of the field
@@ -128,6 +130,9 @@ abstract class JConfig_Core_HookManager
    */
   public function check(Validation $validation, $alias, $value, Jelly_Model $model)
   {
+    if (sizeof($validation->errors()) > 0)
+      return FALSE;
+
     $field = clone $this->_field;
     $field->reset();
 
