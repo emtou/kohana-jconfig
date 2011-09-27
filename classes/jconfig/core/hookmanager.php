@@ -101,11 +101,6 @@ abstract class JConfig_Core_HookManager
    */
   public function add_validation_rules(Validation & $validation)
   {
-    $nb_rules = 0;
-
-    // @hack add a validation rule
-    $nb_rules++;
-
     $callback = function(Validation $validation, $alias, $value, Jelly_Model $model, JConfig_HookManager $hookmanager)
     {
       return $hookmanager->check($validation, $alias, $value, $model);
@@ -117,7 +112,7 @@ abstract class JConfig_Core_HookManager
         array(':validation', ':field', ':value', ':model', $this)
     );
 
-    return $nb_rules;
+    return 1;
   }
 
 
