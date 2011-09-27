@@ -32,9 +32,10 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_Model
 {
-  protected $_alias  = '';        /** alias of the model */
-  protected $_config = NULL;      /** configuration array */
-  protected $_fields = array();   /** fields' configurations */
+  protected $_alias      = '';        /** alias of the model */
+  protected $_config     = NULL;      /** configuration array */
+  protected $_fields     = array();   /** fields' configurations */
+  protected $_validation = NULL;      /** field validation instance */
 
 
   /**
@@ -112,26 +113,6 @@ abstract class JConfig_Core_Model
 
 
   /**
-   * Add validation rules to a Validation instance for this model
-   *
-   * @param Validation &$validation Validation instance
-   *
-   * @return int Number of rules added
-   */
-  public function add_validation_rules(Validation & $validation)
-  {
-    $nb_rules = 0;
-
-    foreach ($this->_fields as $field)
-    {
-      $nb_rules += $field->add_validation_rules($validation);
-    }
-
-    return $nb_rules;
-  }
-
-
-  /**
    * Generates a list of formo fields' configuration
    *
    * @param Jelly_Model $model         Model instance
@@ -184,6 +165,31 @@ abstract class JConfig_Core_Model
   public function get_field($alias)
   {
     return $this->_fields[$alias];
+  }
+
+
+  /**
+   * Get the validation rules for this model
+   *
+   * Returns the inner validation instance or create one
+   *
+   * Warning: the newly created Validation instance does have any fields
+   *
+   * @return Validation validation instance
+   */
+  public function get_validation_rules()
+  {
+    if ( ! is_null($this->_validation))
+      return $this->_validation;
+
+    $this->_validation = Jelly_Validation::factory(array());
+
+    foreach ($this->_fields as $field)
+    {
+      $field->add_validation_rules($this->_validation);
+    }
+
+    return $this->_validation;
   }
 
 
