@@ -94,14 +94,15 @@ abstract class JConfig_Core
    * Get the validation rules for the model
    *
    * @param string $model_alias Alias of the model
+   * @param array  $fields      Aliases of the fields to get validation for
    *
    * @return Validation validation instance
    */
-  public function get_validation_rules($model_alias)
+  public function get_validation_rules($model_alias, array $fields = array())
   {
     $this->load($model_alias);
 
-    return $this->_models[$model_alias]->get_validation_rules();
+    return $this->_models[$model_alias]->get_validation_rules($fields);
   }
 
 

@@ -32,10 +32,9 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_Model
 {
-  protected $_alias      = '';        /** alias of the model */
-  protected $_config     = NULL;      /** configuration array */
-  protected $_fields     = array();   /** fields' configurations */
-  protected $_validation = NULL;      /** field validation instance */
+  protected $_alias  = '';        /** alias of the model */
+  protected $_config = NULL;      /** configuration array */
+  protected $_fields = array();   /** fields' configurations */
 
 
   /**
@@ -171,25 +170,28 @@ abstract class JConfig_Core_Model
   /**
    * Get the validation rules for this model
    *
-   * Returns the inner validation instance or create one
+   * if the fields param is set, only add validation rules for these fields
    *
    * Warning: the newly created Validation instance does have any fields
    *
+   * @param array $fields Optional aliases of the fields to get validation for
+   *
    * @return Validation validation instance
    */
-  public function get_validation_rules()
+  public function get_validation_rules(array $fields = array())
   {
-    if ( ! is_null($this->_validation))
-      return $this->_validation;
-
-    $this->_validation = Jelly_Validation::factory(array());
+    $validation = Jelly_Validation::factory(array());
 
     foreach ($this->_fields as $field)
     {
-      $field->add_validation_rules($this->_validation);
+      if (is_null($fields)
+          or isset($fields[$field->get_alias()]))
+      {
+        $field->add_validation_rules($validation);
+      }
     }
 
-    return $this->_validation;
+    return $validation;
   }
 
 
