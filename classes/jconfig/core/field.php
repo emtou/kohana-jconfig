@@ -401,6 +401,23 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Gets javascript code for the current field
+   *
+   * @return string javascript code
+   */
+  public function js_code()
+  {
+    if (isset($this->_config['formo_params'])
+        and isset($this->_config['formo_params']['js_code']))
+    {
+      return $this->_config['formo_params']['js_code'];
+    }
+
+    return '';
+  }
+
+
+  /**
    * Resets all parameters from configuration (except hooks)
    *
    * @return this

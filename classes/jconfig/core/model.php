@@ -216,6 +216,29 @@ abstract class JConfig_Core_Model
 
 
   /**
+   * Gets javascript code for the given form fields
+   *
+   * @param Formo_Form &$form Formo instance to fetch fields' list from
+   *
+   * @return string javascript code
+   */
+  public function js_code(Formo_Form & $form)
+  {
+    $js_code = '';
+
+    foreach ($form->fields() as $field)
+    {
+      if (isset($this->_fields[$field->alias()]))
+      {
+        $js_code .= $this->_fields[$field->alias()]->js_code();
+      }
+    }
+
+    return $js_code;
+  }
+
+
+  /**
    * Translates an error path in plain human language
    *
    * @param string $error Error text
