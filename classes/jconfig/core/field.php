@@ -223,6 +223,30 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Fills javascript files array for the current fields
+   *
+   * Chainable method
+   *
+   * @param array &$scripts Scripts array
+   *
+   * @return this
+   */
+  function add_scripts(array & $scripts)
+  {
+    if (isset($this->_config['formo_params'])
+        and isset($this->_config['formo_params']['scripts']))
+    {
+      foreach ($this->_config['formo_params']['scripts'] as $alias => $filename)
+      {
+        $scripts[$alias] = $filename;
+      }
+    }
+
+    return $this;
+  }
+
+
+  /**
    * Add validation rules to a Validation instance for this field
    *
    * @param Validation &$validation Validation instance

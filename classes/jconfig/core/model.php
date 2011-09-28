@@ -112,6 +112,30 @@ abstract class JConfig_Core_Model
 
 
   /**
+   * Fills javascript files array for the given form fields
+   *
+   * Chainable method
+   *
+   * @param array      &$scripts Scripts array
+   * @param Formo_Form &$form    Formo instance to fetch fields' list from
+   *
+   * @return this
+   */
+  function add_scripts(array & $scripts, Formo_Form & $form)
+  {
+    foreach ($form->fields() as $field)
+    {
+      if (isset($this->_fields[$field->alias()]))
+      {
+        $this->_fields[$field->alias()]->add_scripts($scripts);
+      }
+    }
+
+    return $this;
+  }
+
+
+  /**
    * Generates a list of formo fields' configuration
    *
    * @param Jelly_Model $model         Model instance
