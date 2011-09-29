@@ -72,10 +72,10 @@ abstract class JConfig_Core_Hook_Condition
     switch ($this->_operator)
     {
       case '=' :
-        return ($value == $this->_value);
+        return $this->_applies_operator_equal($value, $model, $field);
 
       case '!=' :
-        return ($value != $this->_value);
+        return ( ! $this->_applies_operator_equal($value, $model, $field));
 
       case 'match' :
         return (preg_match($this->_value, $value) == 1);
@@ -95,6 +95,52 @@ abstract class JConfig_Core_Hook_Condition
     );
   }
 
+
+  /**
+   * Checks if the condition with equal operator applies
+   *
+   * @param mixed         $value Value to check against
+   * @param Jelly_Model   $model Jelly model instance
+   * @param JConfig_Field $field Field to run hooks on
+   *
+   * @return bool Does the condition apply ?
+   *
+   * @throws JConfig_Exception Can't check if condition applies: unknown condition operator :condoperator
+   */
+  protected function _applies_operator_equal($value, Jelly_Model $model, $field)
+  {
+    $submatches = array();
+    if (preg_match('/^:([^:]+):(.+)?$/D', $this->_value, $submatches))
+    {
+      $type = $submatches[1];
+
+      switch ($type)
+      {
+        case ':field' :
+          if (isset($model->{$submatches[2]}))
+          {
+            return ($value == $model->{$submatches[2]});
+          }
+          else
+          {
+            throw new JConfig_Exception(
+              'Can\'t check if condition with equal operator applies: field :alias not found in model',
+              array(':alias' => $alias)
+            );
+          }
+
+        default :
+          throw new JConfig_Exception(
+            'Can\'t check if condition with equal operator applies: unknown condition type :type',
+            array(':type' => $type)
+          );
+      }
+    }
+    else
+    {
+      return ($value == $this->_value);
+    }
+  }
 
   /**
    * Checks if the condition applies to a known field
