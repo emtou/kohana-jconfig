@@ -209,6 +209,31 @@ abstract class JConfig_Core_Field
 
 
   /**
+   * Add a namespace to a field configuration array
+   *
+   * @param string $namespace Namespace to add
+   * @param array  &$config   Configuration array of a field
+   *
+   * @return array namespaced configuration array
+   */
+  public static function add_namespace($namespace, array & $config)
+  {
+    if (isset($config['hooks']))
+    {
+      foreach (array_keys($config['hooks']) as $hookstype)
+      {
+        foreach (array_keys($config['hooks'][$hookstype]) as $hook_nb)
+        {
+          $config['hooks'][$hookstype][$hook_nb]->add_namespace($namespace);
+        }
+      }
+    }
+
+    return $config;
+  }
+
+
+  /**
    * Create a chainable instance of the JConfig_Field class
    *
    * @param string $alias  Alias of the field

@@ -61,6 +61,24 @@ abstract class JConfig_Core_Hook
 
 
   /**
+   * Add a namespace all the hook's conditions
+   *
+   * @param string $namespace Namespace to add
+   *
+   * @return this
+   */
+  public function add_namespace($namespace)
+  {
+    foreach (array_keys($this->_conditions) as $condition_nb)
+    {
+      $this->_conditions[$condition_nb]->add_namespace($namespace);
+    }
+
+    return $this;
+  }
+
+
+  /**
    * Adds a condition to the internal container
    *
    * @param string $what     What does the condition apply to ?

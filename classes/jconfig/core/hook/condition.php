@@ -201,7 +201,7 @@ abstract class JConfig_Core_Hook_Condition
 
       switch ($type)
       {
-        case ':field' :
+        case 'field' :
           if (isset($submatches[2]))
           {
             $alias = $submatches[3];
@@ -250,6 +250,31 @@ abstract class JConfig_Core_Hook_Condition
   public static function factory($what, $operator, $value)
   {
     return new JConfig_Hook_Condition($what, $operator, $value);
+  }
+
+
+  /**
+   * Add a namespace to the condition
+   *
+   * @param string $namespace Namespace to add
+   *
+   * @return this
+   */
+  public function add_namespace($namespace)
+  {
+    $submatches = array();
+    if (preg_match('/^:field:(.+)$/D', $this->_what, $submatches))
+    {
+      $this->_what = ':field:'.$namespace.'_'.$submatches[1];
+    }
+
+    $submatches = array();
+    if (preg_match('/^:field:(.+)$/D', $this->_value, $submatches))
+    {
+      $this->_value = ':field:'.$namespace.'_'.$submatches[1];
+    }
+
+    return $this;
   }
 
 
