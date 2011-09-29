@@ -72,10 +72,22 @@ abstract class JConfig_Core_Hook_Condition
     switch ($this->_operator)
     {
       case '=' :
-        return $this->_applies_operator_equal($value, $model, $field);
+        return $this->_applies_operator_equal($value, $model);
 
       case '!=' :
-        return ( ! $this->_applies_operator_equal($value, $model, $field));
+        return ( ! $this->_applies_operator_equal($value, $model));
+
+      case '^=' :
+        return $this->_applies_operator_start($value, $model);
+
+      case '!^=' :
+        return ( ! $this->_applies_operator_start($value, $model));
+
+      case '$=' :
+        return $this->_applies_operator_end($value, $model);
+
+      case '!$=' :
+        return ( ! $this->_applies_operator_end($value, $model));
 
       case 'match' :
         return (preg_match($this->_value, $value) == 1);
@@ -99,48 +111,50 @@ abstract class JConfig_Core_Hook_Condition
   /**
    * Checks if the condition with equal operator applies
    *
-   * @param mixed         $value Value to check against
-   * @param Jelly_Model   $model Jelly model instance
-   * @param JConfig_Field $field Field to run hooks on
+   * @param mixed       $value Value to check against
+   * @param Jelly_Model $model Jelly model instance
    *
    * @return bool Does the condition apply ?
    *
-   * @throws JConfig_Exception Can't check if condition applies: unknown condition operator :condoperator
+   * @see JConfig_Hook_Condition::_get_value()
    */
-  protected function _applies_operator_equal($value, Jelly_Model $model, $field)
+  protected function _applies_operator_equal($value, Jelly_Model $model)
   {
-    $submatches = array();
-    if (preg_match('/^:([^:]+):(.+)?$/D', $this->_value, $submatches))
-    {
-      $type = $submatches[1];
-
-      switch ($type)
-      {
-        case ':field' :
-          if (isset($model->{$submatches[2]}))
-          {
-            return ($value == $model->{$submatches[2]});
-          }
-          else
-          {
-            throw new JConfig_Exception(
-              'Can\'t check if condition with equal operator applies: field :alias not found in model',
-              array(':alias' => $alias)
-            );
-          }
-
-        default :
-          throw new JConfig_Exception(
-            'Can\'t check if condition with equal operator applies: unknown condition type :type',
-            array(':type' => $type)
-          );
-      }
-    }
-    else
-    {
-      return ($value == $this->_value);
-    }
+    return ($value == $this->_get_value($this->_value, $model));
   }
+
+
+  /**
+   * Checks if the condition with end operator applies
+   *
+   * @param mixed       $value Value to check against
+   * @param Jelly_Model $model Jelly model instance
+   *
+   * @return bool Does the condition apply ?
+   *
+   * @see JConfig_Hook_Condition::_get_value()
+   */
+  protected function _applies_operator_end($value, Jelly_Model $model)
+  {
+    return preg_match('/'.$this->_get_value($this->_value, $model).'$/D', $value);
+  }
+
+
+  /**
+   * Checks if the condition with start operator applies
+   *
+   * @param mixed       $value Value to check against
+   * @param Jelly_Model $model Jelly model instance
+   *
+   * @return bool Does the condition apply ?
+   *
+   * @see JConfig_Hook_Condition::_get_value()
+   */
+  protected function _applies_operator_start($value, Jelly_Model $model)
+  {
+    return preg_match('/^'.$this->_get_value($this->_value, $model).'/', $value);
+  }
+
 
   /**
    * Checks if the condition applies to a known field
@@ -165,6 +179,62 @@ abstract class JConfig_Core_Hook_Condition
 
     $value = $model->{$alias};
     return $this->_applies_operator($value, $model, $field);
+  }
+
+
+  /**
+   * Parse a value
+   *
+   * if value is :field:alias, returns the model's field's value
+   *
+   * @param string      $value Value to parse
+   * @param Jelly_Model $model Jelly model instance
+   *
+   * @return string parsed value
+   */
+  protected function _get_value($value, Jelly_Model $model)
+  {
+    $submatches = array();
+    if (preg_match('/^:([^:]+)(:(.+))?$/D', $value, $submatches))
+    {
+      $type = $submatches[1];
+
+      switch ($type)
+      {
+        case ':field' :
+          if (isset($submatches[2]))
+          {
+            $alias = $submatches[3];
+
+            if (isset($model->{$alias}))
+            {
+              return $model->{$alias};
+            }
+            else
+            {
+              throw new JConfig_Exception(
+                'Can\'t parse value in condition: field :alias not found in model',
+                array(':alias' => $alias)
+              );
+            }
+          }
+          else
+          {
+            throw new JConfig_Exception(
+              'Can\'t parse value in condition: :field should be followed by an alias'
+            );
+          }
+        default :
+          throw new JConfig_Exception(
+            'Can\'t parse value in condition: unknown value type :type',
+            array(':type' => $type)
+          );
+      }
+    }
+    else
+    {
+      return $this->_value;
+    }
   }
 
 
