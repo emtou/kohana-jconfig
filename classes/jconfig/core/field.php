@@ -476,6 +476,7 @@ abstract class JConfig_Core_Field
     // Load values from config
     $this->_description  = (isset($this->_config['description'])?($this->_config['description']):'');
     $this->_driver       = $this->_config['driver'];
+    $this->_error        = FALSE;
     $this->_extraparams  = (isset($this->_config['extraparams'])?($this->_config['extraparams']):(array()));
     $this->_forcedvalue  = (isset($this->_config['forcedvalue'])?($this->_config['forcedvalue']):(NULL));
     $this->_formo_params = (isset($this->_config['formo_params'])?($this->_config['formo_params']):(NULL));
