@@ -254,6 +254,17 @@ abstract class JConfig_Core_Hook_Condition
 
 
   /**
+   * This condition's summary
+   *
+   * @return string summary
+   */
+  public function __tostring()
+  {
+    return 'Hook Condition '.$this->_what.' '.$this->_operator.' '.$this->_value;
+  }
+
+
+  /**
    * Add a namespace to the condition
    *
    * @param string $namespace Namespace to add

@@ -174,6 +174,17 @@ abstract class JConfig_Core_Hook_Result
 
 
   /**
+   * This result's summary
+   *
+   * @return string summary
+   */
+  public function __tostring()
+  {
+    return 'Hook Result '.$this->_what.' '.$this->_operation.' '.$this->_value;
+  }
+
+
+  /**
    * Apply the result action to a field
    *
    * @param Jelly_Model   $model  Jelly model instance
