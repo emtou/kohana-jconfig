@@ -130,8 +130,8 @@ abstract class JConfig_Core_HookManager
    */
   public function check(Validation $validation, $alias, $value, Jelly_Model $model)
   {
-    if (sizeof($validation->errors()) > 0)
-      return FALSE;
+    //if (sizeof($validation->errors()) > 0)
+    //  return FALSE;
 
     $field = clone $this->_field;
     $field->reset();
