@@ -208,7 +208,7 @@ abstract class JConfig_Core
   {
     // Extract model alias from error text
     $submatches = array();
-    if (preg_match('/^jconfig\/([^\/]+)\//', $error, $submatches))
+    if (preg_match('/^jconfig\/([^\/.]+)(\/|.)/', $error, $submatches))
     {
       $model_alias = $submatches[1];
 

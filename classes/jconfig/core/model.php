@@ -273,10 +273,10 @@ abstract class JConfig_Core_Model
   {
     // Extract model alias from error text
     $submatches = array();
-    if (preg_match('/^jconfig\/[^\/]+\/_external\.([^\.]+)\.(.+)$/D', $error, $submatches))
+    if (preg_match('/^jconfig\/[^\/.]+(\/|\.)(_external\.)?([^\.]+)\.(.+)$/D', $error, $submatches))
     {
-      $alias     = $submatches[1];
-      $errorcode = $submatches[2];
+      $alias     = $submatches[3];
+      $errorcode = $submatches[4];
 
       switch ($errorcode)
       {
@@ -293,12 +293,18 @@ abstract class JConfig_Core_Model
               array(':field' => $this->_fields[$alias]->get_label())
           );
 
+        case 'unique':
+          return __(
+              ':field must be unique',
+              array(':field' => $this->_fields[$alias]->get_label())
+          );
+
         default :
           return $errorcode;
       }
     }
 
-    return $error;
+    return "Y".$error;
   }
 
 
