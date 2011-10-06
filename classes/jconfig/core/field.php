@@ -130,7 +130,10 @@ abstract class JConfig_Core_Field
         }
         else
         {
-          $new_values[] = preg_replace('/\//', '\/', $value);
+          $new_value = preg_replace('/\//', '\/', $value);
+          $new_value = preg_replace('/\+/', '\+', $new_value);
+
+          $new_values[] = $new_value;
         }
       }
 
