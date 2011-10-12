@@ -340,6 +340,8 @@ abstract class JConfig_Core_Field
   /**
    * Get formo field value from the model
    *
+   * If the field is a Jelly_Field_BelongsTo, the value is the value of the primary key
+   *
    * @param Jelly_Model &$model Model to fetch values from
    *
    * @return mixed formo value
@@ -347,6 +349,10 @@ abstract class JConfig_Core_Field
   public function formo_value(Jelly_Model & $model)
   {
     $value = $model->{$this->_alias};
+    if ($this->_driver == 'Jelly_Field_BelongsTo')
+    {
+      $value = $model->{$this->_alias}->{$model->{$this->_alias}->meta()->primary_key()};
+    }
 
     // Run hooks
     $this->_hookmanager->formo_value($model, $this, $value);
