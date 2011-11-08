@@ -61,7 +61,7 @@ class Jelly_Model extends Jelly_Core_Model
     {
       $new_data = array();
 
-      foreach ($extra_validation->getArrayCopy() as $alias)
+      foreach (array_keys($extra_validation->getArrayCopy()) as $alias)
       {
         if (isset($data[$alias]))
         {
