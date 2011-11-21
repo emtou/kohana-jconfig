@@ -32,9 +32,10 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_Model
 {
-  protected $_alias  = '';        /** alias of the model */
-  protected $_config = NULL;      /** configuration array */
-  protected $_fields = array();   /** fields' configurations */
+  protected $_alias   = '';        /** alias of the model */
+  protected $_config  = NULL;      /** configuration array */
+  protected $_fields  = array();   /** fields' configurations */
+  protected $_jconfig = NULL;      /** instance of the Jconfig core */
 
 
   /**
@@ -42,13 +43,15 @@ abstract class JConfig_Core_Model
    *
    * Can't be called, the factory() method must be used.
    *
-   * @param string $alias Alias of the model
+   * @param string  $alias   Alias of the model
+   * @param JConfig $jconfig JConfig core instance
    *
    * @return JConfig_Model
    */
-  protected function __construct($alias)
+  protected function __construct($alias, JConfig $jconfig)
   {
-    $this->_alias = $alias;
+    $this->_alias   = $alias;
+    $this->_jconfig = $jconfig;
 
     $this->_load();
   }
@@ -82,7 +85,7 @@ abstract class JConfig_Core_Model
 
     foreach ($this->_config['fields'] as $field_alias => $field_config)
     {
-      $this->_fields[$field_alias] = JConfig_Field::factory($field_alias, $field_config);
+      $this->_fields[$field_alias] = JConfig_Field::factory($field_alias, $field_config, $this->_jconfig);
     }
   }
 
@@ -101,13 +104,14 @@ abstract class JConfig_Core_Model
   /**
    * Create a chainable instance of the JConfig_Model class
    *
-   * @param string $alias Alias of the model
+   * @param string  $alias   Alias of the model
+   * @param JConfig $jconfig JConfig core instance
    *
    * @return JConfig_Model
    */
-  public static function factory($alias)
+  public static function factory($alias, $jconfig)
   {
-    return new JConfig_Model($alias);
+    return new JConfig_Model($alias, $jconfig);
   }
 
 

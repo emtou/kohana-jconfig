@@ -32,8 +32,9 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_HookManager
 {
-  protected $_field = NULL;      /** Reference to the field */
-  protected $_hooks = array();   /** Array of array of JConfig_Hook */
+  protected $_field   = NULL;      /** reference to the field */
+  protected $_hooks   = array();   /** array of array of JConfig_Hook */
+  protected $_jconfig = NULL;      /** instance of the Jconfig core */
 
 
   /**
@@ -41,31 +42,34 @@ abstract class JConfig_Core_HookManager
    *
    * Can't be called, the factory() method must be used.
    *
-   * @param JConfig_Field &$field Reference to the field
+   * @param JConfig_Field $field   field instance
+   * @param JConfig       $jconfig JConfig core instance
    *
    * @return JConfig_HookManager
    */
-  protected function __construct(JConfig_Field & $field)
+  protected function __construct(JConfig_Field $field, JConfig $jconfig)
   {
-    $this->_field = $field;
-    $this->_hooks = array(
+    $this->_field   = $field;
+    $this->_hooks   = array(
       'formovalue' => array(),
       'validation' => array(),
       'update'     => array(),
     );
+    $this->_jconfig = $jconfig;
   }
 
 
   /**
    * Create a chainable instance of the JConfig_HookManager class
    *
-   * @param JConfig_Field &$field Reference to the field
+   * @param JConfig_Field $field   field instance
+   * @param JConfig       $jconfig JConfig core instance
    *
    * @return JConfig_HookManager
    */
-  public static function factory(JConfig_Field & $field)
+  public static function factory(JConfig_Field $field, JConfig $jconfig)
   {
-    return new JConfig_HookManager($field);
+    return new JConfig_HookManager($field, $jconfig);
   }
 
 
@@ -82,7 +86,9 @@ abstract class JConfig_Core_HookManager
     {
       foreach ($hooks as $hook)
       {
-        $hook->set_hookmanager($this);
+        $hook->set_hookmanager($this)
+             ->set_jconfig($this->_jconfig)
+             ->init();
       }
 
       $this->_hooks[$alias] = $hooks;
@@ -105,6 +111,12 @@ abstract class JConfig_Core_HookManager
     {
       return $hookmanager->check($validation, $alias, $value, $model);
     };
+
+    if ($this->_jconfig->config['caching']
+        and $this->_jconfig->config['cache']['use_superclosure'])
+    {
+      $callback = new SuperClosure($callback);
+    }
 
     $validation->rule(
         $this->_field->get_alias(),

@@ -240,6 +240,21 @@ abstract class JConfig_Core_Hook_Result
 
 
   /**
+   * Encapsulate inner operation in a SuperClosure instance if it is a callback
+   *
+   * @return null
+   */
+  public function encapsulate_callbacks_in_superclosure()
+  {
+    if (is_callable($this->_operation)
+        and ! $this->_operation instanceof SuperClosure)
+    {
+      $this->_operation = new SuperClosure($this->_operation);
+    }
+  }
+
+
+  /**
    * Get all possible values for a field
    *
    * @param array &$values Array of possible values to fill

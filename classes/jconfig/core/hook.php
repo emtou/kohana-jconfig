@@ -96,6 +96,26 @@ abstract class JConfig_Core_Hook
 
 
   /**
+   * Initialise the hook before adding it to the manager
+   *
+   * - Encapsulate all results' callbacks if caching and cache.use_superclosure configuration flags are set
+   *
+   * @return this
+   */
+  public function init()
+  {
+    if ($this->_jconfig->config['caching']
+        and $this->_jconfig->config['cache']['use_superclosure'])
+    {
+      foreach ($this->_results as $result)
+      {
+        $result->encapsulate_callbacks_in_superclosure();
+      }
+    }
+  }
+
+
+  /**
    * Get all possible values for a field
    *
    * @param array &$values Array of possible values to fill
@@ -203,6 +223,21 @@ abstract class JConfig_Core_Hook
   public function set_hookmanager(JConfig_HookManager & $hookmanager)
   {
     $this->_hookmanager = $hookmanager;
+
+    return $this;
+  }
+
+
+  /**
+   * Set the internal reference to the JConfig core
+   *
+   * @param JConfig $jconfig Reference to the JConfig core instance
+   *
+   * @return this
+   */
+  public function set_jconfig(JConfig $jconfig)
+  {
+    $this->_jconfig = $jconfig;
 
     return $this;
   }

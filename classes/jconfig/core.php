@@ -34,6 +34,8 @@ abstract class JConfig_Core
 {
   protected $_models = array();   /** Loaded models' configurations */
 
+  public $config = NULL;          /** Configuration (from file) */
+
 
   /**
    * Creates and initialises the JConfig
@@ -44,6 +46,8 @@ abstract class JConfig_Core
    */
   protected function __construct()
   {
+    // Load configuration from file
+    ($this->config === NULL) and $this->config = Kohana::config('jconfig');
   }
 
 
@@ -136,7 +140,17 @@ abstract class JConfig_Core
       return;
     }
 
-    $this->_models[$model_alias] = JConfig_Model::factory($model_alias);
+    if ( ! $this->config['caching']
+        or ! $this->_models[$model_alias]
+            = Cache::instance()->get($this->config['cache']['prefix'].$model_alias, FALSE))
+    {
+      $this->_models[$model_alias] = JConfig_Model::factory($model_alias, $this);
+
+      if ($this->config['caching'])
+      {
+        Cache::instance()->set($this->config['cache']['prefix'].$model_alias, $this->_models[$model_alias]);
+      }
+    }
   }
 
 

@@ -42,6 +42,7 @@ abstract class JConfig_Core_Field
   protected $_formo_params = NULL;    /** extra formo params */
   protected $_help         = NULL;    /** help message */
   protected $_hookmanager  = NULL;    /** hook manager */
+  protected $_jconfig      = NULL;    /** instance of the Jconfig core */
   protected $_label        = '';      /** label of the field */
   protected $_required     = FALSE;   /** is this field required ? */
   protected $_rules        = array(); /** standard constraint rules */
@@ -53,15 +54,17 @@ abstract class JConfig_Core_Field
    *
    * Can't be called, the factory() method must be used.
    *
-   * @param string $alias  Alias of the field
-   * @param array  $config Configuration of the field
+   * @param string  $alias   Alias of the field
+   * @param array   $config  Configuration of the field
+   * @param JConfig $jconfig JConfig core instance
    *
    * @return JConfig_Field
    */
-  protected function __construct($alias, array $config)
+  protected function __construct($alias, array $config, JConfig $jconfig)
   {
-    $this->_alias  = $alias;
-    $this->_config = $config;
+    $this->_alias   = $alias;
+    $this->_config  = $config;
+    $this->_jconfig = $jconfig;
 
     $this->_load();
   }
@@ -91,7 +94,7 @@ abstract class JConfig_Core_Field
    */
   protected function _load_hookmanager()
   {
-    $this->_hookmanager = JConfig_HookManager::factory($this);
+    $this->_hookmanager = JConfig_HookManager::factory($this, $this->_jconfig);
 
     if (isset($this->_config['hooks']))
     {
@@ -239,14 +242,15 @@ abstract class JConfig_Core_Field
   /**
    * Create a chainable instance of the JConfig_Field class
    *
-   * @param string $alias  Alias of the field
-   * @param array  $config Configuration of the field
+   * @param string  $alias   Alias of the field
+   * @param array   $config  Configuration of the field
+   * @param JConfig $jconfig JConfig core instance
    *
    * @return JConfig_Field
    */
-  public static function factory($alias, array $config)
+  public static function factory($alias, array $config, JConfig $jconfig)
   {
-    return new JConfig_Field($alias, $config);
+    return new JConfig_Field($alias, $config, $jconfig);
   }
 
 
