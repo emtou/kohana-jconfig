@@ -32,10 +32,11 @@ defined('SYSPATH') OR die('No direct access allowed.');
  */
 abstract class JConfig_Core_Model
 {
-  protected $_alias   = '';        /** alias of the model */
-  protected $_config  = NULL;      /** configuration array */
-  protected $_fields  = array();   /** fields' configurations */
-  protected $_jconfig = NULL;      /** instance of the Jconfig core */
+  protected $_alias        = '';        /** alias of the model */
+  protected $_config       = NULL;      /** configuration array */
+  protected $_fields       = array();   /** fields' configurations */
+  protected $_jconfig      = NULL;      /** instance of the Jconfig core */
+  protected $_jelly_fields = array(); /** list of jelly fields */
 
 
   /**
@@ -86,6 +87,8 @@ abstract class JConfig_Core_Model
     foreach ($this->_config['fields'] as $field_alias => $field_config)
     {
       $this->_fields[$field_alias] = JConfig_Field::factory($field_alias, $field_config, $this->_jconfig);
+
+      $this->_jelly_fields[$field_alias] = $this->_fields[$field_alias]->initialize();
     }
   }
 
@@ -232,14 +235,7 @@ abstract class JConfig_Core_Model
    */
   public function initialize(Jelly_Meta & $meta)
   {
-    $fields = array();
-
-    foreach ($this->_fields as $field_alias => $field)
-    {
-      $fields[$field_alias] = $field->initialize();
-    }
-
-    $meta->table($this->_config['tablename'])->fields($fields);
+    $meta->table($this->_config['tablename'])->fields($this->_jelly_fields);
   }
 
 
