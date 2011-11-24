@@ -353,7 +353,7 @@ abstract class JConfig_Core_Field
   public function formo_value(Jelly_Model & $model)
   {
     $value = $model->{$this->_alias};
-    if ($this->_driver == 'Jelly_Field_BelongsTo')
+    if (preg_match('/^Jelly_Field_BelongsTo/', $this->_driver))
     {
       $value = $model->{$this->_alias}->{$model->{$this->_alias}->meta()->primary_key()};
     }
