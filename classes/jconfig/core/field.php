@@ -127,7 +127,7 @@ abstract class JConfig_Core_Field
       $empty_flag = '';
       foreach ($values as $value)
       {
-        if ($value == '')
+        if ($value === '')
         {
           $empty_flag = '?';
         }
