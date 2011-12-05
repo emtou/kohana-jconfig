@@ -352,10 +352,22 @@ abstract class JConfig_Core_Field
    */
   public function formo_value(Jelly_Model & $model)
   {
-    $value = $model->{$this->_alias};
     if (preg_match('/^Jelly_Field_BelongsTo/', $this->_driver))
     {
       $value = $model->{$this->_alias}->{$model->{$this->_alias}->meta()->primary_key()};
+    }
+    elseif (preg_match('/^Jelly_Field_ManyToMany/', $this->_driver))
+    {
+      $keys = array();
+      foreach ($model->{$this->_alias} as $item)
+      {
+        $keys[] = $item->{$item->meta()->primary_key()};
+      }
+      $value = implode(',', $keys);
+    }
+    else
+    {
+      $value = $model->{$this->_alias};
     }
 
     // Run hooks
