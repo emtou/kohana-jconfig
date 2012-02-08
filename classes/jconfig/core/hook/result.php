@@ -36,6 +36,9 @@ abstract class JConfig_Core_Hook_Result
   protected $_operation = NULL;   /** What operation to do ? */
   protected $_value     = NULL;   /** Optionnal value to the operation ? */
 
+  public $bypass = FALSE;  /** Should the parent hook be bypassed ? */
+
+
 
   /**
    * Creates and initialises the JConfig_Hook_Result
@@ -212,6 +215,17 @@ abstract class JConfig_Core_Hook_Result
             return $this->_apply_to_field($submatches[2], $model, $field);
           else
             return $this->_apply_to_field(NULL, $model, $field);
+
+        case 'process' :
+          if ($this->_operation == 'bypass')
+          {
+            $this->bypass = TRUE;
+            return TRUE;
+          }
+          throw new JConfig_Exception(
+            'Can\'t apply process result: unknown process operation :resoperation',
+            array(':resoperation' => $this->_operation)
+          );
 
         case 'value' :
           if (is_callable($this->_operation))

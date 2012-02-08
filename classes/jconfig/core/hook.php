@@ -36,6 +36,8 @@ abstract class JConfig_Core_Hook
   protected $_hookmanager = NULL;      /** Reference to the hookmanager instance */
   protected $_results     = array();   /** Array of JConfig_Hook_Result */
 
+  public $bypass = FALSE; /** Should this hook be bypassed ? */
+
 
   /**
    * Creates and initialises the JConfig_Hook
@@ -174,6 +176,10 @@ abstract class JConfig_Core_Hook
     foreach ($this->_results as $result)
     {
       $result->apply($model, $field);
+      if ($result->bypass == TRUE)
+      {
+        $this->bypass = TRUE;
+      }
     }
 
     return TRUE;
@@ -207,6 +213,10 @@ abstract class JConfig_Core_Hook
       $field = $this->_hookmanager->get_field();
 
       $result->apply($model, $field, $value);
+      if ($result->bypass == TRUE)
+      {
+        $this->bypass = TRUE;
+      }
     }
 
     return TRUE;

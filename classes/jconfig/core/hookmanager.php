@@ -243,7 +243,8 @@ abstract class JConfig_Core_HookManager
   {
     foreach ($this->_hooks['validation'] as $hook)
     {
-      if ($hook->run($model, $field))
+      if ($hook->run($model, $field)
+          and $hook->bypass == FALSE)
       {
         return $this;
       }
