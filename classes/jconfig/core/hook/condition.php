@@ -89,6 +89,12 @@ abstract class JConfig_Core_Hook_Condition
       case '!$=' :
         return ( ! $this->_applies_operator_end($value, $model));
 
+      case 'member' :
+        return call_user_func(array($model, $this->_value));
+
+      case '!member' :
+        return ! call_user_func(array($model, $this->_value));
+
       case 'match' :
         return (preg_match($this->_value, $value) == 1);
 
