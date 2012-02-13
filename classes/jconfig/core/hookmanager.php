@@ -153,7 +153,16 @@ abstract class JConfig_Core_HookManager
     // Error from a hook
     if (is_string($field->get_error()))
     {
-      $validation->error($alias, $field->get_error());
+      $error      = $field->get_error();
+      $submatches = array();
+      if (preg_match('/^\[([^\]]+)\](.*)$/D', $error, $submatches))
+      {
+        $validation->error($submatches[1], $submatches[2]);
+      }
+      else
+      {
+        $validation->error($alias, $error);
+      }
       return FALSE;
     }
 

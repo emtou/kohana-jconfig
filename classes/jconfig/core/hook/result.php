@@ -74,6 +74,16 @@ abstract class JConfig_Core_Hook_Result
    */
   protected function _apply_operation($alias, Jelly_Model $model, JConfig_Field & $field)
   {
+    // @hack don't handle results on model fields for now, except for errors
+    if ( ! is_null($alias)
+         and $this->_operation != 'error')
+    {
+      throw new JConfig_Exception(
+        'Can\'t apply result: don\'t handle results on model fields for non-error operations',
+        array()
+      );
+    }
+
     switch ($this->_operation)
     {
       case 'description' :
@@ -87,6 +97,10 @@ abstract class JConfig_Core_Hook_Result
         if (is_null($alias))
         {
           $field->set_error(( ! is_null($this->_value)?($this->_value):':fieldname has an unknown error'));
+        }
+        else
+        {
+          $field->set_error(( ! is_null($this->_value)?('['.$alias.']'.$this->_value):':fieldname['.$alias.'] has an unknown error'));
         }
         return TRUE;
 
@@ -148,15 +162,6 @@ abstract class JConfig_Core_Hook_Result
       );
     }
 
-    // @hack don't handle results on model fields for now
-    if ( ! is_null($alias))
-    {
-      throw new JConfig_Exception(
-        'Can\'t apply result: don\'t handle results on model fields for now',
-        array()
-      );
-    }
-
     return $this->_apply_operation($alias, $model, $field);
   }
 
@@ -204,7 +209,7 @@ abstract class JConfig_Core_Hook_Result
   public function apply(Jelly_Model $model, JConfig_Field & $field, & $value = NULL)
   {
     $submatches = array();
-    if (preg_match('/^:([^:]+)(:(.+))?$/D', $this->_what, $submatches))
+    if (preg_match('/^:([^:]+)(?:\:(.+))?$/D', $this->_what, $submatches))
     {
       $type = $submatches[1];
 
