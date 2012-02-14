@@ -107,7 +107,13 @@ abstract class JConfig_Core_Hook_Result
       case 'forcedvalue' :
         if (is_null($alias))
         {
-          $field->set_forcedvalue(( ! is_null($this->_value)?($this->_value):(NULL)));
+          $forcedvalue = $this->_value;
+          if (is_array($this->_value)
+              and $this->_value[0] == 'member')
+          {
+            $forcedvalue = call_user_func(array($model, $this->_value[1]));
+          }
+          $field->set_forcedvalue(( ! is_null($forcedvalue)?($forcedvalue):(NULL)));
         }
         return TRUE;
 
