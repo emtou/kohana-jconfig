@@ -166,6 +166,13 @@ abstract class JConfig_Core_HookManager
       return FALSE;
     }
 
+    // Force value
+    if ( ! is_null($field->get_forcedvalue()))
+    {
+      $value                        = $field->get_forcedvalue();
+      $model->{$field->get_alias()} = $value;
+    }
+
     // Empty required field
     if ($field->get_required() AND $value == '')
     {
