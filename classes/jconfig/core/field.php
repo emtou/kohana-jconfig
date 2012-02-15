@@ -326,7 +326,12 @@ abstract class JConfig_Core_Field
 
     if ($this->_values)
     {
-      $formo_params['options'] = array_merge(array('--select--'=>''), $this->_values);
+      $formo_params['options'] = $this->_values;
+
+      if ( ! $formo_params['required'])
+      {
+        array_unshift($formo_params['options'], array('&nbsp;'=>''));
+      }
     }
 
     // disable field ?
@@ -372,6 +377,12 @@ abstract class JConfig_Core_Field
 
     // Run hooks
     $this->_hookmanager->formo_value($model, $this, $value);
+
+    // Fill in default value if needed
+    if ($value == '' and array_key_exists('default_value', $this->_formo_params))
+    {
+      $value = $this->_formo_params['default_value'];
+    }
 
     return $value;
   }
